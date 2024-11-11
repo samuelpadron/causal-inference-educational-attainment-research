@@ -4,7 +4,7 @@ library(dagitty)
 library(bnlearn)
 library(dplyr)
 
-ESS11 <- read_csv("data/ESS11.csv")
+ESS11 <- read_csv("data/ESS11_clean.csv")
 
 dag <- graphLayout(dagitty("dag{
 agea [exposure]
