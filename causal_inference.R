@@ -33,7 +33,7 @@ d <- ESS11 %>%
 
 d$edulvlb <- round(d$edulvlb / 100)
 d$edulvlb <- ordered(d$edulvlb)
-d$edulvlb <- as.integer(d$edulvlb)
+# d$edulvlb <- as.integer(d$edulvlb)
 # d$gndr <- as.integer(d$gndr)
 
 d$gndr <- ordered(d$gndr)
@@ -54,7 +54,7 @@ d$ipudrsta <- ordered(d$ipudrsta)
 d$ipmodsta <- ordered(d$ipmodsta)
 d$iphlppla <- ordered(d$iphlppla)
 d$hinctnta <- ordered(d$hinctnta)
-# d$agea <- scale(d$agea)
+d$agea <- scale(d$agea)
 
 d <- subset(d, select=-c(cntry))
 
@@ -71,7 +71,7 @@ r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
 plotLocalTestResults(r)
 r
 
-lvsem.fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
+lvsem.fit <- cfa(lvsem, sample.cov=M, sample.nobs=nrow(d))
 summary(lvsem.fit)
 
 # Fit the CFA model and inspect latent variable covariance matrix (right now only using latent_variables, not complete DAG)
