@@ -5,6 +5,7 @@ library(bnlearn)
 library(dplyr)
 
 ESS11 <- read_csv("data/ESS11_clean.csv")
+dag <- graphLayout(dagitty(read_file("./dag.txt")))
 
 # Pre-processing steps
 d <- ESS11 %>%
@@ -29,100 +30,54 @@ d <- ESS11 %>%
     slprl <= 4,
     hlthhmp <= 3
   )
-# d$edulvlb <- round(d$edulvlb / 100) * 100
-# d$edulvlb <- cut(d$edulvlb, breaks=c(0, 100, 200, 300, 400, 500, 600, 700, 800))
-# d$edulvlb <- ordered(d$edulvlb)
+
+d$edulvlb <- round(d$edulvlb / 100) * 100
+d$edulvlb <- ordered(d$edulvlb)
 # d$gndr <- as.integer(d$gndr)
-# d$agea <- as.integer(d$agea)
-# d$agea <- scale(d$agea)
 
-# d <- d %>% mutate(across(where(is.numeric), as.integer))
+d$gndr <- ordered(d$gndr)
+d$stflife <- ordered(d$stflife)
+d$lrscale <- ordered(d$lrscale)
+d$health <- ordered(d$health)
+d$hlthhmp <- ordered(d$hlthhmp)
+d$alcfreq <- ordered(d$alcfreq)
+d$cgtsmok <- ordered(d$cgtsmok)
+d$slprl <- ordered(d$slprl)
+d$happy <- ordered(d$happy)
+d$ipsucesa <- ordered(d$ipsucesa)
+d$iprspota <- ordered(d$iprspota)
+d$impricha <- ordered(d$impricha)
+d$ipshabta <- ordered(d$ipshabta)
+d$ipcrtiva <- ordered(d$ipcrtiva)
+d$ipudrsta <- ordered(d$ipudrsta)
+d$ipmodsta <- ordered(d$ipmodsta)
+d$iphlppla <- ordered(d$iphlppla)
+d$hinctnta <- ordered(d$hinctnta)
+d$agea <- scale(d$agea)
 
-# d <- d %>% filter(!is.na(edulvlb))
-# d <- subset(d, select=setdiff(names(dag), latents(dag)))
-# d <- subset(d, select=-c(cntry))
+d <- subset(d, select=-c(cntry))
 
-d <- d %>% mutate(across(where(is.numeric), scale))
-
-# dag_vars <- names(dag)
-# d <- d %>% select(all_of(dag_vars))
-# d <- d %>%
-#   mutate(across(where(is.character), as.numeric)) %>%
-#   mutate(across(where(is.factor), as.numeric))
-
-dag <- graphLayout(dagitty('
-dag {
-agea [exposure]
-alcfreq [outcome]
-cgtsmok [outcome]
-desire_to_seek_validation [latent]
-gndr [exposure]
-health [exposure]
-hinctnta [exposure]
-hlthhmp [outcome]
-impricha [outcome]
-ipmodsta [outcome]
-iprspota [outcome]
-ipshabta [outcome]
-ipsucesa [outcome]
-lrscale [outcome]
-slprl [outcome]
-stflife [outcome]
-agea -> edulvlb
-desire_to_seek_validation -> edulvlb
-desire_to_seek_validation -> impricha
-desire_to_seek_validation -> ipmodsta
-desire_to_seek_validation -> iprspota
-desire_to_seek_validation -> ipshabta
-desire_to_seek_validation -> ipsucesa
-desire_to_seek_validation -> stflife
-edulvlb -> alcfreq
-edulvlb -> cgtsmok
-edulvlb -> impricha
-edulvlb -> slprl
-edulvlb -> stflife
-gndr -> edulvlb
-happy -> ipsucesa
-health -> happy
-health -> hlthhmp
-hinctnta -> edulvlb
-}
-'))
+# d <- d %>% mutate(across(where(is.numeric), scale))
 
 # Which factors positively affect external validation-seeking?
-
 # First step: Get factor values for the latent variables 'desire_to_seek_validation', 'innate_desire_to_help', 'innate_desire_to_learn'
+
 lvsem <- toString(dag, "lavaan")
 cat(lvsem)
-lvsem.fit <- sem(lvsem, d)
 
-lvsem <- "
-edulvlb~agea
-desire_to_seek_validation=~edulvlb + impricha + ipmodsta + iprspota + ipshabta + ipsucesa + stflife
-alcfreq~edulvlb
-cgtsmok~edulvlb
-impricha~edulvlb
-slprl~edulvlb
-stflife~edulvlb
-edulvlb~gndr
-ipsucesa~happy
-happy~health
-hlthhmp~health
-edulvlb~hinctnta
-lrscale ~~ lrscale
-"
-cat(lvsem)
-lvsem.fit <- sem(lvsem, d)
-latent_variables <- 'desire_to_seek_validation =~ ipsucesa + ipshabta + ipmodsta + iprspota\ninnate_desire_to_help =~ ipudrsta + iphlppla + lrscale + hlthhmp\ninnate_desire_to_learn =~ ipsucesa + ipcrtiva + impricha'
-full_model <- paste(lvsem, latent_variables, sep="")
-cat(full_model)
+M <- lavCor(d)
+r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
+plotLocalTestResults(r)
+
+lvsem.fit <- cfa(lvsem, sample.cov=M, sample.nobs=nrow(d))
+summary(lvsem.fit)
 
 # Fit the CFA model and inspect latent variable covariance matrix (right now only using latent_variables, not complete DAG)
 fit <- cfa(lvsem, data=d)
 lavInspect(fit, "cov.lv")
 
 # Obtain latent factor scores and print them (these are the values we can use to add the three variables to the dataset)
-latent_scores <- lavPredict(fit)
+latent_scores <- lavPredict(lvsem.fit)
 cat(latent_scores)
 
 summary(fit)
