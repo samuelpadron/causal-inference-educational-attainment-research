@@ -31,8 +31,9 @@ d <- ESS11 %>%
     hlthhmp <= 3
   )
 
-d$edulvlb <- round(d$edulvlb / 100) * 100
+d$edulvlb <- round(d$edulvlb / 100)
 d$edulvlb <- ordered(d$edulvlb)
+d$edulvlb <- as.integer(d$edulvlb)
 # d$gndr <- as.integer(d$gndr)
 
 d$gndr <- ordered(d$gndr)
@@ -53,7 +54,7 @@ d$ipudrsta <- ordered(d$ipudrsta)
 d$ipmodsta <- ordered(d$ipmodsta)
 d$iphlppla <- ordered(d$iphlppla)
 d$hinctnta <- ordered(d$hinctnta)
-d$agea <- scale(d$agea)
+# d$agea <- scale(d$agea)
 
 d <- subset(d, select=-c(cntry))
 
@@ -68,8 +69,9 @@ cat(lvsem)
 M <- lavCor(d)
 r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
 plotLocalTestResults(r)
+r
 
-lvsem.fit <- cfa(lvsem, sample.cov=M, sample.nobs=nrow(d))
+lvsem.fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
 summary(lvsem.fit)
 
 # Fit the CFA model and inspect latent variable covariance matrix (right now only using latent_variables, not complete DAG)
@@ -81,30 +83,3 @@ latent_scores <- lavPredict(lvsem.fit)
 cat(latent_scores)
 
 summary(fit)
-
-
-# How do factors such as age, gender, and socioeconomic status affect an individual’s educational attainment?
-#   Exposure variables: gndr, agea, hinctnta
-#   Outcome: edulvlb
-
-
-plot(dag)
-
-lvsem <- toString(dag, "lavaan")
-lvsem.fit <- sem(lvsem, ESS11)
-
-lvsem <-  "
-U=~ l*agea
-U=~ l*gndr
-U=~ l*hinctnta
-edulvlb~agea
-edulvlb~gndr
-edulvlb~hinctnta
-"
-cat(lvsem)
-
-ESS11$U <- predict(lvsem.fit)
-
-net <- model2network(toString(dag,"bnlearn"))
-fit <- bn.fit(net, ESS11)
-fit

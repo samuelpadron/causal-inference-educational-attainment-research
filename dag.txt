@@ -1,54 +1,54 @@
-dag{
-  agea [exposure]
-  alcfreq [outcome]
-  cgtsmok [outcome]
-  desire_to_seek_validation [latent]
-  edulvlb 
-  gndr [exposure]
-  happy
-  health [exposure]
-  hinctnta [exposure]
-  hlthhmp [outcome]
-  impricha [outcome]
-  innate_desire_to_help [latent]
-  innate_desire_to_learn [latent]
-  ipcrtiva [outcome]
-  iphlppla [outcome]
-  ipmodsta [outcome]
-  iprspota [outcome]
-  ipshabta [outcome]
-  ipsucesa [outcome]
-  ipudrsta [outcome]
-  lrscale [outcome]
-  slprl [outcome]
-  stflife [outcome]
-  agea -> edulvlb
-  desire_to_seek_validation -> edulvlb
-  desire_to_seek_validation -> impricha
-  desire_to_seek_validation -> ipmodsta
-  desire_to_seek_validation -> iprspota
-  desire_to_seek_validation -> ipshabta
-  desire_to_seek_validation -> ipsucesa
-  desire_to_seek_validation -> stflife
-  edulvlb -> alcfreq
-  edulvlb -> cgtsmok
-  edulvlb -> impricha
-  edulvlb -> slprl
-  edulvlb -> stflife
-  gndr -> edulvlb
-  happy -> ipsucesa
-  health -> happy
-  health -> hlthhmp
-  hinctnta -> edulvlb
-  innate_desire_to_help -> edulvlb
-  innate_desire_to_help -> hlthhmp
-  innate_desire_to_help -> iphlppla
-  innate_desire_to_help -> ipudrsta
-  innate_desire_to_help -> lrscale
-  innate_desire_to_help -> stflife
-  innate_desire_to_learn -> edulvlb
-  innate_desire_to_learn -> impricha
-  innate_desire_to_learn -> ipcrtiva
-  innate_desire_to_learn -> ipsucesa
-  innate_desire_to_learn -> stflife
+dag {
+bb="-7.17,-6.692,7.395,7.13"
+agea [pos="-4.785,-2.409"]
+desire_to_seek_validation [latent,pos="2.356,-0.962"]
+edulvlb [pos="-0.159,-6.636"]
+gndr [pos="-5.956,0.500"]
+happiness [latent,pos="-2.600,3.501"]
+happy [pos="-0.026,5.753"]
+health [outcome,pos="-4.574,4.307"]
+hinctnta [outcome,pos="-6.516,-0.532"]
+hlthhmp [outcome,pos="-2.433,0.581"]
+impricha [outcome,pos="0.025,1.045"]
+ipcrtiva [pos="4.222,0.219"]
+iphlppla [outcome,pos="4.999,2.402"]
+ipmodsta [outcome,pos="3.667,-4.625"]
+iprspota [outcome,pos="6.181,0.154"]
+ipshabta [outcome,pos="5.407,-3.104"]
+ipsucesa [outcome,pos="-0.449,-0.572"]
+ipudrsta [outcome,pos="5.698,1.262"]
+lrscale [outcome,pos="3.324,4.293"]
+slprl [outcome,pos="-5.272,2.321"]
+stflife [outcome,pos="-1.257,3.570"]
+virtuosity [latent,pos="2.936,1.276"]
+agea -> desire_to_seek_validation
+agea -> edulvlb
+agea -> health
+agea -> hinctnta
+desire_to_seek_validation -> edulvlb
+desire_to_seek_validation -> impricha
+desire_to_seek_validation -> ipmodsta
+desire_to_seek_validation -> iprspota
+desire_to_seek_validation -> ipshabta
+desire_to_seek_validation -> ipsucesa
+desire_to_seek_validation -> stflife
+edulvlb -> impricha
+edulvlb -> stflife
+gndr -> edulvlb
+happiness -> happy
+happiness -> stflife
+happy -> ipsucesa
+health -> happiness
+health -> hlthhmp
+hinctnta -> edulvlb
+hlthhmp -> hinctnta
+ipshabta -> ipcrtiva
+slprl -> health
+virtuosity -> impricha
+virtuosity -> ipcrtiva
+virtuosity -> iphlppla
+virtuosity -> ipmodsta
+virtuosity -> ipsucesa
+virtuosity -> ipudrsta
+virtuosity -> lrscale
 }
