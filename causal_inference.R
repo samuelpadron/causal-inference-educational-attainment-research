@@ -7,6 +7,8 @@ library(dplyr)
 ESS11 <- read_csv("data/ESS11_clean.csv")
 dag <- graphLayout(dagitty(read_file("./dag.txt")))
 
+plot(dag)
+
 # Pre-processing steps
 d <- ESS11 %>%
   filter(
@@ -36,7 +38,7 @@ d$edulvlb <- ordered(d$edulvlb)
 # d$edulvlb <- as.integer(d$edulvlb)
 # d$gndr <- as.integer(d$gndr)
 
-d$gndr <- ordered(d$gndr)
+d$gndr <- as.numeric( ordered(d$gndr, c("1", "2")))
 d$stflife <- ordered(d$stflife)
 d$lrscale <- ordered(d$lrscale)
 d$health <- ordered(d$health)
@@ -61,9 +63,15 @@ d <- subset(d, select=-c(cntry))
 # d <- d %>% mutate(across(where(is.numeric), scale))
 
 # Which factors positively affect external validation-seeking?
-# First step: Get factor values for the latent variables 'desire_to_seek_validation', 'innate_desire_to_help', 'innate_desire_to_learn'
+# First step: Get factor values for the latent variables
 
 lvsem <- toString(dag, "lavaan")
+
+lat_lvsem <- "desire_to_seek_validation =~ impricha + iprspota + ipshabta + ipsucesa + edulvlb
+  virtuosity =~ ipcrtiva + ipshabta + ipmodsta + iphlppla
+  real_health =~ health + hlthhmp
+  happiness =~ happy + stflife"
+
 cat(lvsem)
 
 M <- lavCor(d)
@@ -71,15 +79,18 @@ r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
 plotLocalTestResults(r)
 r
 
-lvsem.fit <- cfa(lvsem, sample.cov=M, sample.nobs=nrow(d))
-summary(lvsem.fit)
+fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
+lvsem.fit <- cfa(lvsem2, data=d)
+summary(fit)
 
-# Fit the CFA model and inspect latent variable covariance matrix (right now only using latent_variables, not complete DAG)
-fit <- cfa(lvsem, data=d)
-lavInspect(fit, "cov.lv")
+# Inspect latent variable covariance matrix 
+lavInspect(lvsem.fit, "cov.lv")
 
 # Obtain latent factor scores and print them (these are the values we can use to add the three variables to the dataset)
 latent_scores <- lavPredict(lvsem.fit)
-cat(latent_scores)
+head(latent_scores)
+
+d <- cbind(d, as.data.frame(latent_scores))
+
 
 summary(fit)
