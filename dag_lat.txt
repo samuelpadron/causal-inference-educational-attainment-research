@@ -1,0 +1,25 @@
+dag {
+bb="-4.507,-5.053,6.113,5.444"
+agea [pos="-0.548,-1.594"]
+desire_to_seek_validation [outcome,pos="-2.781,-4.178"]
+edulvlb [pos="-0.636,1.355"]
+gndr [pos="1.769,-1.176"]
+happiness [outcome,pos="-3.622,2.332"]
+hinctnta [pos="-3.177,-0.160"]
+real_health [pos="2.237,2.552"]
+slprl [pos="5.228,1.850"]
+virtuosity [pos="1.570,-3.895"]
+agea -> desire_to_seek_validation
+agea -> edulvlb
+agea -> hinctnta
+agea -> real_health
+agea -> virtuosity
+edulvlb -> happiness
+edulvlb <-> real_health
+gndr -> edulvlb
+gndr -> virtuosity
+hinctnta -> edulvlb
+hinctnta -> happiness
+real_health -> happiness
+slprl -> real_health
+}

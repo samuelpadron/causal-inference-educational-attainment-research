@@ -5,7 +5,7 @@ library(bnlearn)
 library(dplyr)
 
 ESS11 <- read_csv("data/ESS11_clean.csv")
-dag <- graphLayout(dagitty(read_file("./dag.txt")))
+dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
 
 plot(dag)
 
@@ -94,3 +94,8 @@ d <- cbind(d, as.data.frame(latent_scores))
 
 
 summary(fit)
+
+cg <- coordinates(dag)
+fg <- lavaanToGraph(fit, digits=2)
+coordinates(fg) <- cg
+plot(fg, show.coefficients=TRUE)
