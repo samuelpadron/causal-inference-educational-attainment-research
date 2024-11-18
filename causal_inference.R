@@ -80,7 +80,7 @@ plotLocalTestResults(r)
 r
 
 fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
-lvsem.fit <- cfa(lvsem2, data=d)
+lvsem.fit <- cfa(lat_lvsem, data=d)
 summary(fit)
 
 # Inspect latent variable covariance matrix 
