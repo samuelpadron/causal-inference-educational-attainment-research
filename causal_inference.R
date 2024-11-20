@@ -3,9 +3,11 @@ library(lavaan)
 library(dagitty)
 library(bnlearn)
 library(dplyr)
+library(lavaanPlot) #https://lavaanplot.alexlishinski.com/articles/intro_to_lavaanplot
 
 ESS11 <- read_csv("data/ESS11_clean.csv")
 dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
+
 
 plot(dag)
 
@@ -99,3 +101,8 @@ cg <- coordinates(dag)
 fg <- lavaanToGraph(fit, digits=2)
 coordinates(fg) <- cg
 plot(fg, show.coefficients=TRUE)
+
+lavaanPlot(model=fit, coefs=TRUE)
+
+
+
