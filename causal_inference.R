@@ -3,10 +3,15 @@ library(lavaan)
 library(dagitty)
 library(bnlearn)
 library(dplyr)
+library(lavaanPlot) #https://lavaanplot.alexlishinski.com/articles/intro_to_lavaanplot
 
-ESS11 <- read_csv("data/ESS11_clean.csv")
-dag <- graphLayout(dagitty(read_file("./dag.txt")))
+ESS11 <- read_csv("data/ESS11_raw.csv")
+ESS11 <- ESS11 %>% select(gndr, edulvlb, agea, lrscale, hinctnta, happy,
+                    stflife, alcfreq, cgtsmok, ipsucesa, iprspota, impricha,
+                    ipshabta, ipcrtiva, ipudrsta, ipmodsta, iphlppla, health, slprl,
+                    hlthhmp, height, weighta, rlgdgr, weasoff, enjlf, wrhpp)
 
+# %%
 # Pre-processing steps
 d <- ESS11 %>%
   filter(
@@ -28,58 +33,94 @@ d <- ESS11 %>%
     iphlppla <= 6,
     health <= 5,
     slprl <= 4,
-    hlthhmp <= 3
+    hlthhmp <= 3,
+    height <= 300,
+    weighta <= 500,
+    rlgdgr <= 10,
+    weasoff <= 5,
+    wrhpp <= 4,
+    enjlf <= 4,
   )
 
 d$edulvlb <- round(d$edulvlb / 100)
 d$edulvlb <- ordered(d$edulvlb)
-# d$edulvlb <- as.integer(d$edulvlb)
-# d$gndr <- as.integer(d$gndr)
-
-d$gndr <- ordered(d$gndr)
+d$gndr <- as.numeric( ordered(d$gndr, c("1", "2")))
 d$stflife <- ordered(d$stflife)
 d$lrscale <- ordered(d$lrscale)
 d$health <- ordered(d$health)
-d$hlthhmp <- ordered(d$hlthhmp)
-d$alcfreq <- ordered(d$alcfreq)
-d$cgtsmok <- ordered(d$cgtsmok)
+d$hlthhmp <- ordered(-d$hlthhmp)
+d$alcfreq <- ordered(-d$alcfreq)
+d$cgtsmok <- ordered(-d$cgtsmok)
 d$slprl <- ordered(d$slprl)
 d$happy <- ordered(d$happy)
-d$ipsucesa <- ordered(d$ipsucesa)
-d$iprspota <- ordered(d$iprspota)
-d$impricha <- ordered(d$impricha)
-d$ipshabta <- ordered(d$ipshabta)
-d$ipcrtiva <- ordered(d$ipcrtiva)
-d$ipudrsta <- ordered(d$ipudrsta)
-d$ipmodsta <- ordered(d$ipmodsta)
-d$iphlppla <- ordered(d$iphlppla)
+d$ipsucesa <- ordered(-d$ipsucesa)
+d$iprspota <- ordered(-d$iprspota)
+d$impricha <- ordered(-d$impricha)
+d$ipshabta <- ordered(-d$ipshabta)
+d$ipcrtiva <- ordered(-d$ipcrtiva)
+d$ipudrsta <- ordered(-d$ipudrsta)
+d$ipmodsta <- ordered(-d$ipmodsta)
+d$iphlppla <- ordered(-d$iphlppla)
 d$hinctnta <- ordered(d$hinctnta)
+
 d$agea <- scale(d$agea)
+d$height <- scale(d$height)
+d$weighta <- scale(d$weighta)
+d$rlgdgr <- scale(d$rlgdgr)
+d$weasoff <- scale(d$weasoff)
+d$wrhpp <- scale(d$wrhpp)
+d$enjlf <- scale(d$enjlf)
 
-d <- subset(d, select=-c(cntry))
-
-# d <- d %>% mutate(across(where(is.numeric), scale))
-
+# %%
 # Which factors positively affect external validation-seeking?
-# First step: Get factor values for the latent variables 'desire_to_seek_validation', 'innate_desire_to_help', 'innate_desire_to_learn'
+# First step: Get factor values for the latent variables
+lat_lvsem <- "desire_to_seek_validation =~ impricha + iprspota + ipshabta + ipsucesa
+  virtuosity =~ ipcrtiva + ipshabta + ipmodsta + iphlppla
+  real_health =~ health + hlthhmp
+  happiness =~ happy + stflife + enjlf + wrhpp"
 
-lvsem <- toString(dag, "lavaan")
-cat(lvsem)
 
-M <- lavCor(d)
-r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
-plotLocalTestResults(r)
-r
-
-lvsem.fit <- cfa(lvsem, sample.cov=M, sample.nobs=nrow(d))
+lvsem.fit <- cfa(lat_lvsem, data=d)
 summary(lvsem.fit)
 
-# Fit the CFA model and inspect latent variable covariance matrix (right now only using latent_variables, not complete DAG)
-fit <- cfa(lvsem, data=d)
-lavInspect(fit, "cov.lv")
+# %%
+# Inspect latent variable covariance matrix 
+lavInspect(lvsem.fit, "cov.lv")
 
+# %%
 # Obtain latent factor scores and print them (these are the values we can use to add the three variables to the dataset)
 latent_scores <- lavPredict(lvsem.fit)
-cat(latent_scores)
+head(latent_scores)
 
+# %%
+dl <- cbind(d, as.data.frame(latent_scores))
+
+# Delete variables used in latent variable definitions
+dl <- dl %>% select(-impricha,-iprspota,-ipshabta,-ipsucesa, -ipcrtiva,
+                  -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife,
+                  -enjlf, -wrhpp)
+
+# %%
+dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
+plot(dag)
+
+# Fit SEM on DAG with latent variables now as observed
+lvsem <- toString(dag, "lavaan")
+cat(lvsem)
+M <- lavCor(dl)
+fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(dl))
+r <- localTests(dag, sample.cov=M, sample.nobs=nrow(dl))
+plotLocalTestResults(r)
+r[order(-r$p.value), ]
+
+# %%
 summary(fit)
+
+# %%
+cg <- coordinates(dag)
+fg <- lavaanToGraph(fit, digits=2)
+coordinates(fg) <- cg
+plot(fg, show.coefficients=TRUE)
+
+# %%
+lavaanPlot(model=fit, coefs=TRUE)

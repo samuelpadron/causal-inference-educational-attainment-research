@@ -1,0 +1,41 @@
+dag {
+bb="-11.151,-11.547,11.219,12.247"
+agea [pos="-3.088,1.222"]
+alcfreq [pos="0.622,6.436"]
+cgtsmok [pos="7.433,-3.540"]
+desire_to_seek_validation [outcome,pos="-8.730,-6.985"]
+edulvlb [pos="1.568,-4.301"]
+happiness [exposure,pos="-2.811,-9.565"]
+height [pos="3.271,4.596"]
+hinctnta [pos="-7.778,5.551"]
+lrscale [pos="5.637,-9.442"]
+real_health [exposure,pos="-9.287,-0.671"]
+rlgdgr [pos="9.355,2.397"]
+slprl [pos="2.855,0.336"]
+virtuosity [exposure,pos="-3.930,-3.392"]
+weasoff [pos="7.305,8.901"]
+weighta [pos="1.266,10.264"]
+agea -> hinctnta
+agea -> real_health
+agea -> rlgdgr
+alcfreq -> real_health
+alcfreq <-> cgtsmok
+cgtsmok -> real_health
+edulvlb -> hinctnta
+edulvlb <-> real_health
+happiness -> desire_to_seek_validation
+height -> alcfreq
+height -> hinctnta
+height -> real_health
+height <-> weighta
+hinctnta -> happiness
+hinctnta <-> real_health
+real_health -> desire_to_seek_validation
+real_health -> happiness
+real_health -> virtuosity
+slprl -> real_health
+virtuosity -> desire_to_seek_validation
+virtuosity -> happiness
+weighta -> alcfreq
+weighta -> real_health
+}
