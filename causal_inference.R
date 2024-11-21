@@ -6,10 +6,6 @@ library(dplyr)
 library(lavaanPlot) #https://lavaanplot.alexlishinski.com/articles/intro_to_lavaanplot
 
 ESS11 <- read_csv("data/ESS11_clean.csv")
-dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
-
-
-plot(dag)
 
 # Pre-processing steps
 d <- ESS11 %>%
@@ -66,22 +62,12 @@ d <- subset(d, select=-c(cntry))
 
 # Which factors positively affect external validation-seeking?
 # First step: Get factor values for the latent variables
-
-lvsem <- toString(dag, "lavaan")
-
 lat_lvsem <- "desire_to_seek_validation =~ impricha + iprspota + ipshabta + ipsucesa
   virtuosity =~ ipcrtiva + ipshabta + ipmodsta + iphlppla
   real_health =~ health + hlthhmp
   happiness =~ happy + stflife"
 
-cat(lvsem)
 
-M <- lavCor(d)
-r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
-plotLocalTestResults(r)
-r
-
-fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
 lvsem.fit <- cfa(lat_lvsem, data=d)
 summary(fit)
 
@@ -97,6 +83,17 @@ d <- cbind(d, as.data.frame(latent_scores))
 # Delete variables used in latent variable definitions
 d <- d %>% select(-impricha,-iprspota,-ipshabta,-ipsucesa, -ipcrtiva,
                   -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife )
+
+# Fit SEM on DAG with latent variables now as observed
+lvsem <- toString(dag, "lavaan")
+cat(lvsem)
+M <- lavCor(d)
+fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
+r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
+plotLocalTestResults(r)
+
+dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
+plot(dag)
 
 
 summary(fit)
