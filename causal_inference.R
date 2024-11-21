@@ -69,7 +69,7 @@ d <- subset(d, select=-c(cntry))
 
 lvsem <- toString(dag, "lavaan")
 
-lat_lvsem <- "desire_to_seek_validation =~ impricha + iprspota + ipshabta + ipsucesa + edulvlb
+lat_lvsem <- "desire_to_seek_validation =~ impricha + iprspota + ipshabta + ipsucesa
   virtuosity =~ ipcrtiva + ipshabta + ipmodsta + iphlppla
   real_health =~ health + hlthhmp
   happiness =~ happy + stflife"
@@ -93,6 +93,10 @@ latent_scores <- lavPredict(lvsem.fit)
 head(latent_scores)
 
 d <- cbind(d, as.data.frame(latent_scores))
+
+# Delete variables used in latent variable definitions
+d <- d %>% select(-impricha,-iprspota,-ipshabta,-ipsucesa, -ipcrtiva,
+                  -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife )
 
 
 summary(fit)
