@@ -1,24 +1,35 @@
 dag {
 bb="-4.507,-5.053,6.113,5.444"
-agea [exposure,pos="-0.548,-1.594"]
-desire_to_seek_validation [outcome,pos="-2.781,-4.178"]
-edulvlb [outcome,pos="-0.636,1.355"]
-gndr [exposure,pos="1.769,-1.176"]
-happiness [outcome,pos="-3.622,2.332"]
-hinctnta [exposure,pos="-3.177,-0.160"]
-real_health [pos="2.237,2.552"]
+agea [exposure,pos="0.677,-2.429"]
+desire_to_seek_validation [outcome,pos="-2.268,-4.027"]
+edulvlb [outcome,pos="5.005,-0.294"]
+gndr [exposure,pos="3.458,-2.333"]
+happiness [pos="-4.415,1.305"]
+hinctnta [exposure,pos="1.988,-0.902"]
+lrscale [pos="5.275,-3.156"]
+real_health [pos="-0.005,1.770"]
 slprl [pos="5.228,1.850"]
-virtuosity [exposure,pos="1.570,-3.895"]
+virtuosity [pos="1.570,-3.895"]
 agea -> desire_to_seek_validation
 agea -> edulvlb
 agea -> hinctnta
+agea -> lrscale
 agea -> real_health
 agea -> virtuosity
 edulvlb -> happiness
 gndr -> edulvlb
+gndr -> lrscale
 gndr -> virtuosity
+happiness -> desire_to_seek_validation
 hinctnta -> edulvlb
 hinctnta -> happiness
+hinctnta -> lrscale
+lrscale -> edulvlb
+lrscale -> virtuosity
+real_health -> desire_to_seek_validation
 real_health -> happiness
 slprl -> real_health
+slprl -> virtuosity
+virtuosity -> desire_to_seek_validation
+virtuosity -> happiness
 }

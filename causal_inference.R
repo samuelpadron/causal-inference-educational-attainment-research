@@ -82,7 +82,8 @@ d <- cbind(d, as.data.frame(latent_scores))
 
 # Delete variables used in latent variable definitions
 d <- d %>% select(-impricha,-iprspota,-ipshabta,-ipsucesa, -ipcrtiva,
-                  -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife )
+                  -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife,
+                  -ipudrsta, -alcfreq, -cgtsmok) # TODO: delete unused columns in DAG and latent variables from ESS11_clean.csv
 
 # Fit SEM on DAG with latent variables now as observed
 dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
