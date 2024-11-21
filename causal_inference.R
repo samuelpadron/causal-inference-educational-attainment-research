@@ -85,18 +85,22 @@ d <- d %>% select(-impricha,-iprspota,-ipshabta,-ipsucesa, -ipcrtiva,
                   -ipmodsta, -iphlppla, -health, -hlthhmp, -happy, -stflife )
 
 # Fit SEM on DAG with latent variables now as observed
-lvsem <- toString(dag, "lavaan")
-cat(lvsem)
-M <- lavCor(d)
-fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
-r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
-plotLocalTestResults(r)
-
 dag <- graphLayout(dagitty(read_file("./dag_lat.txt")))
 plot(dag)
 
+lvsem <- toString(dag, "lavaan")
+cat(lvsem)
 
+M <- lavCor(d)
+
+fit <- sem(lvsem, sample.cov=M, sample.nobs=nrow(d))
 summary(fit)
+
+r <- localTests(dag, sample.cov=M, sample.nobs=nrow(d))
+print(r)
+plotLocalTestResults(r)
+
+modificationindices(fit)
 
 cg <- coordinates(dag)
 fg <- lavaanToGraph(fit, digits=2)
