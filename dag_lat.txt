@@ -1,35 +1,68 @@
 dag {
-bb="-4.507,-5.053,6.113,5.444"
-agea [exposure,pos="0.677,-2.429"]
-desire_to_seek_validation [outcome,pos="-2.268,-4.027"]
-edulvlb [outcome,pos="5.005,-0.294"]
-gndr [exposure,pos="3.458,-2.333"]
-happiness [pos="-4.415,1.305"]
-hinctnta [exposure,pos="1.988,-0.902"]
-lrscale [pos="5.275,-3.156"]
-real_health [pos="-0.005,1.770"]
-slprl [pos="5.228,1.850"]
-virtuosity [pos="1.570,-3.895"]
+bb="-11.151,-11.547,11.219,12.247"
+agea [pos="-0.535,1.534"]
+alcfreq [pos="0.741,7.321"]
+cgtsmok [pos="7.433,-3.540"]
+ctrlife [pos="-1.483,-6.358"]
+desire_to_seek_validation [outcome,pos="-8.730,-6.985"]
+edulvlb [pos="1.568,-4.301"]
+gndr [pos="-3.533,7.847"]
+happiness [pos="-2.811,-9.565"]
+height [pos="3.271,4.596"]
+hinctnta [pos="-7.778,5.551"]
+lrscale [pos="9.995,-9.825"]
+netustm [pos="2.809,-11.021"]
+real_health [pos="-9.287,-0.671"]
+rlgdgr [pos="9.355,2.397"]
+sclmeet [pos="5.066,-6.716"]
+slprl [pos="2.855,0.336"]
+virtue [pos="-3.309,-4.421"]
+weighta [pos="1.266,10.264"]
+agea -> alcfreq
+agea -> ctrlife
 agea -> desire_to_seek_validation
-agea -> edulvlb
+agea -> height
 agea -> hinctnta
+agea -> edulvlb
 agea -> lrscale
+agea -> netustm
 agea -> real_health
-agea -> virtuosity
-edulvlb -> happiness
-gndr -> edulvlb
-gndr -> lrscale
-gndr -> virtuosity
+agea -> rlgdgr
+agea -> sclmeet
+gndr -> rlgdgr
+alcfreq -> cgtsmok
+alcfreq -> real_health
+cgtsmok -> real_health
+ctrlife -> happiness
+edulvlb -> alcfreq
+edulvlb -> cgtsmok
+edulvlb -> hinctnta
+edulvlb <-> real_health
+gndr -> alcfreq
+gndr -> height
+gndr -> slprl
+gndr -> virtue
+gndr -> weighta
 happiness -> desire_to_seek_validation
-hinctnta -> edulvlb
+height -> alcfreq
+height -> hinctnta
+height -> real_health
+height <-> weighta
 hinctnta -> happiness
-hinctnta -> lrscale
-lrscale -> edulvlb
-lrscale -> virtuosity
+netustm -> edulvlb
+netustm -> happiness
+real_health -> ctrlife
 real_health -> desire_to_seek_validation
 real_health -> happiness
+real_health -> hinctnta
+rlgdgr -> alcfreq
+sclmeet -> alcfreq
+sclmeet -> cgtsmok
+sclmeet -> happiness
+sclmeet -> real_health
 slprl -> real_health
-slprl -> virtuosity
-virtuosity -> desire_to_seek_validation
-virtuosity -> happiness
+virtue -> desire_to_seek_validation
+virtue -> happiness
+virtue -> lrscale
+weighta -> real_health
 }

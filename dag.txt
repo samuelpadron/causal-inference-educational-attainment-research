@@ -1,27 +1,10 @@
 dag {
 bb="-6.69,-5.799,9.105,6.125"
-agea [pos="-1.962,1.859"]
-desire_to_seek_validation [latent,pos="-0.868,-1.450"]
-edulvlb [pos="-3.526,-0.150"]
-gndr [pos="-2.203,-4.552"]
-happiness [latent,pos="-0.014,2.568"]
-happy [pos="0.500,-4.805"]
-health [pos="-3.779,3.501"]
-hinctnta [pos="-5.884,1.280"]
-hlthhmp [pos="-5.764,4.329"]
-impricha [pos="0.662,1.183"]
-ipcrtiva [pos="6.290,0.228"]
-iphlppla [pos="6.507,1.221"]
-ipmodsta [pos="3.126,-1.752"]
-iprspota [pos="-4.628,-3.642"]
-ipshabta [pos="2.310,-0.592"]
-ipsucesa [pos="2.652,-2.938"]
-ipudrsta [pos="2.930,4.238"]
-lrscale [pos="6.049,2.733"]
-real_health [latent,pos="-1.373,3.915"]
-slprl [pos="-4.777,4.825"]
-stflife [pos="2.080,3.029"]
-virtuosity [latent,pos="4.218,0.974"]
+desire_to_seek_validation [latent]
+happiness [latent]
+real_health [latent]
+virtuosity [latent]
+
 agea -> desire_to_seek_validation
 agea -> edulvlb
 agea -> hinctnta
@@ -29,21 +12,17 @@ agea -> real_health
 agea -> virtuosity
 desire_to_seek_validation -> edulvlb
 desire_to_seek_validation -> impricha
+desire_to_seek_validation -> ipcrtiva
 desire_to_seek_validation -> iprspota
 desire_to_seek_validation -> ipshabta
 desire_to_seek_validation -> ipsucesa
-desire_to_seek_validation <-> happiness
-edulvlb -> happiness
 edulvlb -> impricha
 edulvlb <-> real_health
-gndr -> edulvlb
 gndr -> virtuosity
 happiness -> happy
 happiness -> stflife
-happy -> ipsucesa
 hinctnta -> edulvlb
-hinctnta -> happy
-ipshabta -> ipcrtiva
+hinctnta -> happiness
 real_health -> happiness
 real_health -> health
 real_health -> hinctnta
@@ -51,10 +30,8 @@ real_health -> hlthhmp
 slprl -> real_health
 virtuosity -> desire_to_seek_validation
 virtuosity -> edulvlb
-virtuosity -> impricha
 virtuosity -> ipcrtiva
 virtuosity -> iphlppla
 virtuosity -> ipmodsta
 virtuosity -> ipudrsta
-virtuosity -> lrscale
 }
