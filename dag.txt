@@ -4,6 +4,7 @@ desire_to_seek_validation [latent]
 happiness [latent]
 real_health [latent]
 virtuosity [latent]
+
 agea -> desire_to_seek_validation
 agea -> edulvlb
 agea -> hinctnta
